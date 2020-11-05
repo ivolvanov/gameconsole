@@ -10,4 +10,4 @@ This project is about a game console which is multiplayer and contains multiple 
 |  Valentin  |  Vasilev   | 432543@student.fontys.nl |	  3860140       |  432543  | 
 |    Ivo     |  Belitts   | 427265@student.fontys.nl |    3797422       |  427265  |
 |  Chanelle  |    Hart    | 387862@student.fontys.nl |                  |  387862  |
-|  Vladimir  |  Vladinov  | 432274@student.fontys.nl |                  |  432274  |
+|  Vladimir  |  Vladinov  | 432274@student.fontys.nl |    3856771       |  432274  |
