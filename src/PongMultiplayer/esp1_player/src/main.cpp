@@ -61,12 +61,6 @@ void setup()
     return;
   }
 
-  // Register peer
-  esp_now_peer_info_t esp1Peer;
-  memcpy(esp1Peer.peer_addr, esp1, 6);
-  esp1Peer.channel = 0;
-  esp1Peer.encrypt = false;
-
   esp_now_peer_info_t esp2Peer;
   memcpy(esp2Peer.peer_addr, esp2, 6);
   esp2Peer.channel = 0;
@@ -76,13 +70,6 @@ void setup()
   memcpy(esp3Peer.peer_addr, esp3, 6);
   esp3Peer.channel = 0;
   esp3Peer.encrypt = false;
-
-  // // Add peer
-  if (esp_now_add_peer(&esp1Peer) != ESP_OK)
-  {
-    Serial.println("Failed to add peer ESP1");
-    return;
-  }
 
   if (esp_now_add_peer(&esp2Peer) != ESP_OK)
   {
@@ -115,10 +102,10 @@ void shapeExample()
   // Ball position coordinates
   int ball_X = paddle0_X + paddleW + ball_rad;
   int ball_Y = random(1 + ball_rad, oled.getLCDHeight() - ball_rad); //opponent_Y + ball_rad;
-  int ballVelocityX = 1;                                             // Ball left/right velocity
-  int ballVelocityY = 1;                                             // Ball up/down velocity
-  int opponent_paddle_velocity = -1;                                          // Paddle 0 velocity
-  int player_paddle_velocity = 1;                                           // Paddle 1 velocity
+  int ballVelocityX = 2;                                             // Ball left/right velocity
+  int ballVelocityY = 2;                                             // Ball up/down velocity
+  int opponent_paddle_velocity = -2;                                          // Paddle 0 velocity
+  int player_paddle_velocity = 2;                                           // Paddle 1 velocity
 
   //while(ball_X >= paddle0_X + paddleW - 1)
   while ((ball_X - ball_rad > 1) &&
@@ -158,9 +145,9 @@ void shapeExample()
     bool didPaddleHitRightEdge = (player_Y > oled.getLCDHeight() - 2 - paddleH);
 
     if (joystick.getHorizontal() > 750 && !didPaddleHitRightEdge)
-      player_paddle_velocity = 1;
+      player_paddle_velocity = 2;
     else if (joystick.getHorizontal() < 250 && !didPaddleHitLeftEdge)
-      player_paddle_velocity = -1;
+      player_paddle_velocity = -2;
     else
       player_paddle_velocity = 0;
 
@@ -182,7 +169,7 @@ void shapeExample()
       //player_paddle_velocity = -player_paddle_velocity;
     }
 
-    sscanf(messageReceived, "%d;%d;%d", &opponent_Y, &ball_X, &ball_Y);
+    sscanf(messageReceived, "%d", &opponent_Y);
 
     // Draw the Pong Field
     oled.clear(PAGE); // Clear the page

@@ -94,7 +94,7 @@ void loop()
 
   // Send message via ESP-NOW
   esp_err_t result = esp_now_send(esp1, (uint8_t *)&messageToBeSent, sizeof(messageToBeSent));
-  esp_now_send(esp2, (uint8_t *)&messageToBeSent, sizeof(messageToBeSent));
+  //esp_now_send(esp2, (uint8_t *)&messageToBeSent, sizeof(messageToBeSent));
 
   // if (result == ESP_OK)
   // {
