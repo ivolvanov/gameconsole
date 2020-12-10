@@ -22,6 +22,21 @@ char messageReceived[40];
 int playerScore = 0;
 int opponentScore = 0;
 
+String games[] = {"Pong", "Mafia"};
+enum joystickPos
+{
+  LEFT,
+  MIDDLE,
+  RIGHT
+};
+
+joystickPos currentPos = MIDDLE;
+joystickPos previousPos = MIDDLE;
+
+int currentGame = 0;
+
+bool isButtonPressed = false;
+
 void OnDataRecv(const uint8_t *mac, const uint8_t *incomingData, int len)
 {
   memcpy(&messageReceived, incomingData, len);
@@ -32,6 +47,9 @@ void OnDataRecv(const uint8_t *mac, const uint8_t *incomingData, int len)
 MicroOLED oled(PIN_RESET, DC_JUMPER); // I2C declaration
 JOYSTICK joystick;                    //Create instance of this object
 
+void printTitle(String title, int font);
+void getJoystickInput();
+void changeGame();
 void pongGame();
 
 void setup()
@@ -89,6 +107,72 @@ void setup()
   esp_now_register_recv_cb(OnDataRecv);
 }
 
+void loop()
+{
+  getJoystickInput();
+  changeGame();
+  printTitle(games[currentGame], 0);
+}
+
+void printTitle(String title, int font)
+{
+  int middleX = oled.getLCDWidth() / 2;
+  int middleY = oled.getLCDHeight();
+
+  oled.clear(PAGE);
+  oled.setFontType(font);
+  // Try to set the cursor in the middle of the screen
+  oled.setCursor(middleX - (oled.getFontWidth() * (strlen("Game:") / 2)),
+                 middleY * 0.25 - (oled.getFontWidth() / 2));
+  // Print the title:
+  oled.print("Game:");
+  oled.setCursor(middleX - (oled.getFontWidth() * (title.length() / 2)),
+                 middleY * 0.75 - (oled.getFontWidth() / 2));
+  // Print the title:
+  oled.print(title);
+  oled.display();
+  delay(10);
+  oled.clear(PAGE);
+}
+
+void getJoystickInput()
+{
+  if (joystick.getButton() == 0)
+  {
+    isButtonPressed = true;
+  }
+  if (joystick.getVertical() > 750)
+  {
+    currentPos = RIGHT;
+  }
+  else if (joystick.getVertical() < 250)
+  {
+    currentPos = LEFT;
+  }
+  else
+  {
+    currentPos = MIDDLE;
+  }
+}
+
+void changeGame()
+{
+  if (isButtonPressed && currentGame == 0)
+  {
+    isButtonPressed = !isButtonPressed;
+    pongGame();
+  }
+  if (currentPos != MIDDLE && previousPos == MIDDLE)
+  {
+    currentGame = !currentGame;
+    previousPos = currentPos;
+  }
+  else if (currentPos == MIDDLE)
+  {
+    previousPos = MIDDLE;
+  }
+}
+
 void pongGame()
 {
 
@@ -109,8 +193,6 @@ void pongGame()
   int ballVelocityY = 2;                                             // Ball up/down velocity
   int opponent_paddle_velocity = -2;                                 // Paddle 0 velocity
   int player_paddle_velocity = 2;                                    // Paddle 1 velocity
-
-  
 
   //While the ball is in the bounds of the playing field
   while ((ball_X > 0) &&
@@ -211,9 +293,4 @@ void pongGame()
     Serial.println("opponent scored.");
   }
   delay(10);
-}
-
-void loop()
-{
-  pongGame();
 }
