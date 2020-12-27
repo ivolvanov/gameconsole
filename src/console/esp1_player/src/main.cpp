@@ -249,7 +249,7 @@ void pongGame()
         player_paddle_velocity = 0;
 
       // Move the paddles up and down
-      opponent_Y += opponent_paddle_velocity;
+      //opponent_Y += opponent_paddle_velocity;
       player_Y += player_paddle_velocity;
 
       sprintf(messageToBeSent, "%d;%d;%d", player_Y, ball_X, ball_Y); // PADDLE_Y, BALL_X, BALL_Y
@@ -258,7 +258,7 @@ void pongGame()
       // Change paddle 0's direction if it hit top/bottom
       if ((opponent_Y <= 1) || (opponent_Y > oled.getLCDHeight() - 2 - paddleH))
       {
-        opponent_paddle_velocity = -opponent_paddle_velocity;
+        //opponent_paddle_velocity = -opponent_paddle_velocity;
       }
       // Change paddle 1's direction if it hit top/bottom
       if ((player_Y <= 1) || (player_Y > oled.getLCDHeight() - 2 - paddleH))
@@ -278,7 +278,7 @@ void pongGame()
       oled.rectFill(player_X, player_Y, paddleW, paddleH);
       // Draw the ball:
       oled.circle(ball_X, ball_Y, ball_rad);
-      //Draw the score:
+      // Draw the score:
       oled.drawChar(oled.getLCDWidth() / 2 + 3, oled.getLCDHeight() * 0.75, playerScore + '0');
       oled.drawChar(oled.getLCDWidth() / 2 - 8, oled.getLCDHeight() * 0.75, opponentScore + '0');
       // Actually draw everything on the screen:
