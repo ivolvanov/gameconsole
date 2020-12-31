@@ -65,20 +65,23 @@ void OnDataRecv(const uint8_t *mac, const uint8_t *incomingData, int len)
     {
       memcpy(opponent, mac, 6);
       pong = SLAVE;
-      //Serial.println("Pong changed to SLAVE.");
+      Serial.println("Pong changed to SLAVE.");
     }
     else if (state == PONG_WAITING)
     {
       memcpy(opponent, mac, 6);
       state = PLAYING;
+      Serial.println("State changed to PLAYING.");
       if (incomingData[1] == 's')
       {
         esp_now_send(opponent, (uint8_t *)&pongMasterMessage, sizeof(pongMasterMessage));
+        pong = MASTER;
       }
       else
       {
         esp_now_send(opponent, (uint8_t *)&pongSlaveMessage, sizeof(pongSlaveMessage));
         pong = SLAVE;
+        Serial.println("Pong changed to SLAVE.");
       }
     }
   }
@@ -201,13 +204,13 @@ void changeGame()
 
         esp_now_send(broadcastAddress, (uint8_t *)&pongMasterMessage, sizeof(pongMasterMessage));
         state = PONG_WAITING;
-        //Serial.println("State changed to PONG_WAITING.");
+        Serial.println("State changed to PONG_WAITING.");
       }
       else
       {
         esp_now_send(opponent, (uint8_t *)&pongSlaveMessage, sizeof(pongSlaveMessage));
         state = PLAYING;
-        //Serial.println("State changed to PLAYING.");
+        Serial.println("State changed to PLAYING.");
       }
     }
     else if (currentPos != MIDDLE && previousPos == MIDDLE)
