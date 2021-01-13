@@ -17,9 +17,15 @@ void pongGame()
 
     while (playerScore < 3 && opponentScore < 3)
     {
+        if (state != PLAYING)
+        {
+            printConnectionLost();
+            break;
+        }
+
         int paddleW = 3;  // Paddle width
         int paddleH = 15; // Paddle height
-        int ball_rad = 1; // Ball radius
+        int ball_radius = 1; // Ball radius
 
         // Opponent paddle (left) position coordinates
         int opponent_Y = (screen.getLCDHeight() / 2) - (paddleH / 2);
@@ -28,8 +34,8 @@ void pongGame()
         int player_Y = (screen.getLCDHeight() / 2) - (paddleH / 2);
         int player_X = screen.getLCDWidth() - 3 - paddleW;
         // Ball position coordinates
-        int ball_X = opponent_X + paddleW + ball_rad;
-        int ball_Y = random(1 + ball_rad, screen.getLCDHeight() - ball_rad); //opponent_Y + ball_rad;
+        int ball_X = opponent_X + paddleW + ball_radius;
+        int ball_Y = random(1 + ball_radius, screen.getLCDHeight() - ball_radius); //opponent_Y + ball_rad;
         int ballVelocityX = 2;                                               // Ball left/right velocity
         int ballVelocityY = 2;                                               // Ball up/down velocity
         //int opponent_paddle_velocity = -2;                                 // Paddle 0 velocity
@@ -39,13 +45,14 @@ void pongGame()
 
         //While the ball is in the bounds of the playing field
         while ((ball_X > 0) &&
-               (ball_X + ball_rad < screen.getLCDWidth()))
+               (ball_X + ball_radius < screen.getLCDWidth() && state == PLAYING))
         {
+
             // Move ball
             ball_X += ballVelocityX;
             ball_Y += ballVelocityY;
             // Check if the ball is colliding with the opponent (left) paddle
-            if (ball_X - ball_rad < opponent_X + paddleW)
+            if (ball_X - ball_radius < opponent_X + paddleW)
             {
                 // Check if ball is within paddle's height
                 if ((ball_Y > opponent_Y) && (ball_Y < opponent_Y + paddleH))
@@ -55,7 +62,7 @@ void pongGame()
                 }
             }
             // Check if the ball hit the right paddle
-            if (ball_X + ball_rad > player_X)
+            if (ball_X + ball_radius > player_X)
             {
                 // Check if ball is within paddle's height
                 if ((ball_Y > player_Y) && (ball_Y < player_Y + paddleH))
@@ -66,7 +73,7 @@ void pongGame()
             }
 
             // Check if the ball hit the top or bottom
-            if ((ball_Y <= ball_rad) || (ball_Y >= (screen.getLCDHeight() - ball_rad - 4)))
+            if ((ball_Y <= ball_radius) || (ball_Y >= (screen.getLCDHeight() - ball_radius - 4)))
             {
                 // Change up/down velocity direction
                 if (millis() - lastTimeBallHitWall > 500)
@@ -112,7 +119,7 @@ void pongGame()
             screen.rectFill(opponent_X, opponent_Y, paddleW, paddleH);
             screen.rectFill(player_X, player_Y, paddleW, paddleH);
             // Draw the ball:
-            screen.circle(ball_X, ball_Y, ball_rad);
+            screen.circle(ball_X, ball_Y, ball_radius);
             // Draw the score:
             screen.drawChar(screen.getLCDWidth() / 2 + 3, screen.getLCDHeight() * 0.75, playerScore + '0');
             screen.drawChar(screen.getLCDWidth() / 2 - 8, screen.getLCDHeight() * 0.75, opponentScore + '0');
@@ -129,7 +136,7 @@ void pongGame()
             {
                 playerScore++;
             }
-            else if (ball_X >= screen.getLCDWidth() - ball_rad)
+            else if (ball_X >= screen.getLCDWidth() - ball_radius)
             {
                 opponentScore++;
             }

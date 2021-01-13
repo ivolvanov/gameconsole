@@ -2,7 +2,7 @@
 #define SCREEN_H
 
 #include <Arduino.h>
-#include <Wire.h> 
+#include <Wire.h>
 #include <SPI.h>
 #include <SFE_MicroOLED.h> // Include the SFE_MicroOLED library
 
@@ -10,6 +10,10 @@
 #define DC_JUMPER 1
 
 extern MicroOLED screen; // I2C declaration
+
+void initializeScreen();
 void printTitle(String title, int font);
+void printWaitingForOpponent();
+void printConnectionLost();
 
 #endif

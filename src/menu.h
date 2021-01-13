@@ -5,7 +5,7 @@
 
 extern String games[];
 extern int currentGame;
-extern void changeGame();
+extern void menu();
 
 enum State
 {

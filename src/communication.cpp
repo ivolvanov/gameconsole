@@ -8,6 +8,7 @@ uint8_t pongMasterMessage[2] = {'p', 'm'};
 uint8_t handshake = '!';
 uint8_t broadcastAddress[] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
 
+int unsucccessfulSends = 0;
 char messageToBeSent[40];
 char messageReceived[40];
 uint8_t opponent[6];
@@ -34,13 +35,11 @@ void OnDataRecv(const uint8_t *mac, const uint8_t *incomingData, int len)
     {
       memcpy(opponent, mac, 6);
       pong = SLAVE;
-      Serial.println("Pong changed to SLAVE.");
     }
     else if (state == PONG_WAITING)
     {
       memcpy(opponent, mac, 6);
       state = PLAYING;
-      Serial.println("State changed to PLAYING.");
       if (incomingData[1] == 's')
       {
         esp_now_send(opponent, (uint8_t *)&pongMasterMessage, sizeof(pongMasterMessage));
@@ -50,12 +49,30 @@ void OnDataRecv(const uint8_t *mac, const uint8_t *incomingData, int len)
       {
         esp_now_send(opponent, (uint8_t *)&pongSlaveMessage, sizeof(pongSlaveMessage));
         pong = SLAVE;
-        Serial.println("Pong changed to SLAVE.");
       }
     }
   }
   else
   {
     memcpy(&messageReceived, incomingData, len);
+  }
+}
+
+void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status)
+{
+  if (status == ESP_NOW_SEND_FAIL)
+  {
+    if (state == PLAYING)
+      unsucccessfulSends++;
+  }
+  else
+  {
+    unsucccessfulSends = 0;
+  }
+
+  if (unsucccessfulSends >= 3)
+  {
+    state = MENU;
+    pong = MASTER;
   }
 }

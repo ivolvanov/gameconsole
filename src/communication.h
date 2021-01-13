@@ -14,9 +14,11 @@ extern uint8_t opponent[6];
 extern uint8_t handshake;
 extern uint8_t pongMasterMessage[2];
 extern uint8_t pongSlaveMessage[2];
+extern int unsucccessfulSends;
 extern char messageToBeSent[40];
 extern char messageReceived[40];
 
 void OnDataRecv(const uint8_t *mac, const uint8_t *incomingData, int len);
+void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status);
 
 #endif

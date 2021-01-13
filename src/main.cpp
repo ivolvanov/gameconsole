@@ -10,10 +10,10 @@ void setup()
 {
   Serial.begin(115200);
   delay(100);
+
   Wire.begin();
-  screen.begin();     // Initialize the OLED
-  screen.clear(ALL);  // Clear the display's internal memory
-  screen.clear(PAGE); // Clear the buffer.
+
+  initializeScreen();
 
   while (joystick.begin() == false)
   {
@@ -42,8 +42,9 @@ void setup()
   // add the broadcast device (does not check whether adding was a success)
   esp_now_add_peer(&broadcastDevice);
 
-  // Register for a callback function that will be called when data is received
+  // Register for a callback function that will be called when data is received/sent
   esp_now_register_recv_cb(OnDataRecv);
+  esp_now_register_send_cb(OnDataSent);
 
   esp_now_send(broadcastAddress, &handshake, 1);
 
@@ -54,7 +55,7 @@ void setup()
 void loop()
 {
   getJoystickInput();
-  changeGame();
+  menu();
 
   if (state == PLAYING)
     pongGame();
