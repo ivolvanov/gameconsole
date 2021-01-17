@@ -15,5 +15,7 @@ void initializeScreen();
 void printTitle(String title, int font);
 void printWaitingForOpponent();
 void printConnectionLost();
+void printWin();
+void printLoss();
 
 #endif

@@ -59,3 +59,31 @@ void printConnectionLost()
     screen.display();
     delay(3000);
 }
+
+void printWin()
+{
+    screen.clear(PAGE);
+    screen.setFontType(1);
+    screen.setCursor(middleX - (screen.getFontWidth() * (strlen("You") / 2)),
+                     middleY * 0.25 - (screen.getFontWidth() / 2));
+    screen.print("You");
+    screen.setCursor(middleX - (screen.getFontWidth() * (strlen("Won!!") / 2)),
+                     middleY * 0.75 - (screen.getFontWidth() / 2));
+    screen.print("Win!!");
+    screen.display();
+    delay(3000);
+}
+
+void printLoss()
+{
+    screen.clear(PAGE);
+    screen.setFontType(1);
+    screen.setCursor(middleX - (screen.getFontWidth() * (strlen("You") / 2)),
+                     middleY * 0.25 - (screen.getFontWidth() / 2));
+    screen.print("You");
+    screen.setCursor(middleX - (screen.getFontWidth() * (strlen("Lost!") / 2)),
+                     middleY * 0.75 - (screen.getFontWidth() / 2));
+    screen.print("Lost!");
+    screen.display();
+    delay(3000);
+}
