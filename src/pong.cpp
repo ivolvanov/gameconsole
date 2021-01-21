@@ -23,8 +23,8 @@ void pongGame()
             break;
         }
 
-        int paddleW = 3;  // Paddle width
-        int paddleH = 15; // Paddle height
+        int paddleW = 3;     // Paddle width
+        int paddleH = 15;    // Paddle height
         int ball_radius = 1; // Ball radius
 
         // Opponent paddle (left) position coordinates
@@ -36,8 +36,8 @@ void pongGame()
         // Ball position coordinates
         int ball_X = opponent_X + paddleW + ball_radius;
         int ball_Y = random(1 + ball_radius, screen.getLCDHeight() - ball_radius); //opponent_Y + ball_rad;
-        int ballVelocityX = 2;                                               // Ball left/right velocity
-        int ballVelocityY = 2;                                               // Ball up/down velocity
+        int ballVelocityX = 2;                                                     // Ball left/right velocity
+        int ballVelocityY = 2;                                                     // Ball up/down velocity
         //int opponent_paddle_velocity = -2;                                 // Paddle 0 velocity
         int player_paddle_velocity = 2;   // Paddle 1 velocity
         uint32_t lastTimeBallHitWall = 0; // used to fix a bug related to ball radius and wall thickness that sometimes caused the ball to glitch in the wall
@@ -145,6 +145,11 @@ void pongGame()
         }
         delay(10);
     }
+
+    if (playerScore == 3)
+        printWin();
+    else
+        printLoss();
 
     state = MENU;
     pong = MASTER;

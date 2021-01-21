@@ -29,6 +29,7 @@ void OnDataRecv(const uint8_t *mac, const uint8_t *incomingData, int len)
 
     esp_now_send(broadcastAddress, &handshake, sizeof(handshake)); // also send back current device address
   }
+  // handles communication for pong
   if (incomingData[0] == 'p')
   {
     if (state == MENU)
@@ -52,6 +53,11 @@ void OnDataRecv(const uint8_t *mac, const uint8_t *incomingData, int len)
       }
     }
   }
+
+  // handles communication for mafia
+  else if (incomingData[0] == 'm')
+  {
+  }
   else
   {
     memcpy(&messageReceived, incomingData, len);
@@ -64,15 +70,15 @@ void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status)
   {
     if (state == PLAYING)
       unsucccessfulSends++;
+
+    if (unsucccessfulSends >= 3)
+    {
+      state = MENU;
+      pong = MASTER;
+    }
   }
   else
   {
     unsucccessfulSends = 0;
-  }
-
-  if (unsucccessfulSends >= 3)
-  {
-    state = MENU;
-    pong = MASTER;
   }
 }

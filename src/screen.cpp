@@ -69,7 +69,7 @@ void printWin()
     screen.print("You");
     screen.setCursor(middleX - (screen.getFontWidth() * (strlen("Won!!") / 2)),
                      middleY * 0.75 - (screen.getFontWidth() / 2));
-    screen.print("Win!!");
+    screen.print("Won!!");
     screen.display();
     delay(3000);
 }
