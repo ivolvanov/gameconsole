@@ -9,11 +9,20 @@
 // uint8_t esp3[] = {0x24, 0x0A, 0xC4, 0x60, 0xF1, 0x5C};
 
 extern uint8_t broadcastAddress[];
-extern uint8_t opponent[6];
+extern uint8_t pongOpponent[6];
+extern uint8_t mafiaPlayers[10][6];
+extern int currentMafiaPlayers;
 
 extern uint8_t handshake;
 extern uint8_t pongMasterMessage[2];
 extern uint8_t pongSlaveMessage[2];
+extern uint8_t mafiaNarratorMessage[2];
+extern uint8_t mafiaJoinMessage[2];
+extern uint8_t mafiaDisbandMessage[2];
+extern uint8_t mafiaMafiosoMessage[2];
+extern uint8_t mafiaCivilianMesssage[2];
+extern uint8_t mafiaHealerMessage[2];
+extern uint8_t mafiaPolicemanMessage[2];
 extern int unsucccessfulSends;
 extern char messageToBeSent[40];
 extern char messageReceived[40];

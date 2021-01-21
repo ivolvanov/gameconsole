@@ -4,6 +4,7 @@
 #include "communication.h"
 #include "screen.h"
 #include "pong.h"
+#include "mafia.h"
 
 State state = MENU;
 int currentGame = 0;
@@ -12,23 +13,44 @@ String games[] = {"Pong", "Mafia"};
 
 void menu()
 {
-  if (state != PONG_WAITING)
+  if (state == MENU)
   {
-    if (isButtonPressed && currentGame == 0)
+    if (isButtonPressed)
     {
       isButtonPressed = !isButtonPressed;
-      if (pong == MASTER)
+      // pong entered
+      if (currentGame == 0)
       {
-        printWaitingForOpponent();
-        esp_now_send(broadcastAddress, (uint8_t *)&pongMasterMessage, sizeof(pongMasterMessage));
-        state = PONG_WAITING;
+        if (pong == MASTER)
+        {
+          printWaitingForOpponent();
+          esp_now_send(broadcastAddress, (uint8_t *)&pongMasterMessage, sizeof(pongMasterMessage));
+          state = PONG_WAITING;
+        }
+        else
+        {
+          esp_now_send(pongOpponent, (uint8_t *)&pongSlaveMessage, sizeof(pongSlaveMessage));
+          state = PONG_PLAYING;
+        }
       }
-      else
+      // mafia entered
+      else if (currentGame == 1)
       {
-        esp_now_send(opponent, (uint8_t *)&pongSlaveMessage, sizeof(pongSlaveMessage));
-        state = PLAYING;
+        if (currentMafiaPlayers == 0)
+        {
+          esp_now_send(broadcastAddress, (uint8_t *)&mafiaNarratorMessage, sizeof(mafiaNarratorMessage));
+          mafiaRole = NARRATOR;
+          printPressToStart();
+        }
+        else
+        {
+          esp_now_send(broadcastAddress, (uint8_t *)&mafiaJoinMessage, sizeof(mafiaJoinMessage));
+          printWaitingForNarrator();
+        }
+        state = MAFIA_WAITING;
       }
     }
+
     else if (currentPos != MIDDLE && previousPos == MIDDLE)
     {
       currentGame = !currentGame;
@@ -38,6 +60,15 @@ void menu()
     else if (currentPos == MIDDLE)
     {
       previousPos = MIDDLE;
+    }
+  }
+
+  else if (state == MAFIA_WAITING && mafiaRole == NARRATOR)
+  {
+    if (isButtonPressed)
+    {
+      isButtonPressed = !isButtonPressed;
+      state = MAFIA_PLAYING;
     }
   }
 }

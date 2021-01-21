@@ -17,7 +17,7 @@ void pongGame()
 
     while (playerScore < 3 && opponentScore < 3)
     {
-        if (state != PLAYING)
+        if (state != PONG_PLAYING)
         {
             printConnectionLost();
             break;
@@ -45,7 +45,7 @@ void pongGame()
 
         //While the ball is in the bounds of the playing field
         while ((ball_X > 0) &&
-               (ball_X + ball_radius < screen.getLCDWidth() && state == PLAYING))
+               (ball_X + ball_radius < screen.getLCDWidth() && state == PONG_PLAYING))
         {
 
             // Move ball
@@ -98,13 +98,13 @@ void pongGame()
             if (pong == MASTER)
             {
                 sprintf(messageToBeSent, "%d;%d;%d;%d;%d", player_Y, ball_X, ball_Y, playerScore, opponentScore);
-                /*esp_err_t result = */ esp_now_send(opponent, (uint8_t *)&messageToBeSent, sizeof(messageToBeSent));
+                /*esp_err_t result = */ esp_now_send(pongOpponent, (uint8_t *)&messageToBeSent, sizeof(messageToBeSent));
                 sscanf(messageReceived, "%d", &opponent_Y);
             }
             else
             {
                 sprintf(messageToBeSent, "%d", player_Y);
-                /*esp_err_t result = */ esp_now_send(opponent, (uint8_t *)&messageToBeSent, sizeof(messageToBeSent));
+                /*esp_err_t result = */ esp_now_send(pongOpponent, (uint8_t *)&messageToBeSent, sizeof(messageToBeSent));
                 sscanf(messageReceived, "%d;%d;%d;%d;%d", &opponent_Y, &ball_X, &ball_Y, &opponentScore, &playerScore);
                 ball_X = screen.getLCDWidth() - ball_X - 2;
             }
@@ -141,7 +141,7 @@ void pongGame()
                 opponentScore++;
             }
             sprintf(messageToBeSent, "%d;%d;%d;%d;%d", player_Y, ball_X, ball_Y, playerScore, opponentScore);
-            esp_now_send(opponent, (uint8_t *)&messageToBeSent, sizeof(messageToBeSent));
+            esp_now_send(pongOpponent, (uint8_t *)&messageToBeSent, sizeof(messageToBeSent));
         }
         delay(10);
     }

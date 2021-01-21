@@ -5,6 +5,7 @@
 #include "pong.h"
 #include "communication.h"
 #include "menu.h"
+#include "mafia.h"
 
 void setup()
 {
@@ -57,6 +58,9 @@ void loop()
   getJoystickInput();
   menu();
 
-  if (state == PLAYING)
+  if (state == PONG_PLAYING)
     pongGame();
+
+  else if (state == MAFIA_PLAYING)
+    mafiaGame();
 }

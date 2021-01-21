@@ -11,7 +11,9 @@ enum State
 {
   MENU,
   PONG_WAITING,
-  PLAYING
+  MAFIA_WAITING,
+  PONG_PLAYING, 
+  MAFIA_PLAYING
 };
 
 extern State state;

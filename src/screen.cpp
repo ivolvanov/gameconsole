@@ -87,3 +87,45 @@ void printLoss()
     screen.display();
     delay(3000);
 }
+
+void printPressToStart()
+{
+    screen.clear(PAGE);
+    screen.setFontType(0);
+    screen.setCursor(middleX - (screen.getFontWidth() * (strlen("Press") / 2)),
+                     middleY * 0.25 - (screen.getFontWidth() / 2));
+    screen.print("Press");
+    screen.setCursor(middleX - (screen.getFontWidth() * (strlen("to") / 2)),
+                     middleY * 0.5 - (screen.getFontWidth() / 2));
+    screen.print("to");
+    screen.setCursor(middleX - (screen.getFontWidth() * (strlen("start") / 2)),
+                     middleY * 0.75 - (screen.getFontWidth() / 2));
+    screen.print("start");
+    screen.display();
+}
+
+void printWaitingForNarrator()
+{
+    screen.clear(PAGE);
+    screen.setFontType(0);
+    screen.setCursor(middleX - (screen.getFontWidth() * (strlen("Waiting") / 2)),
+                     middleY * 0.25 - (screen.getFontWidth() / 2));
+    screen.print("Waiting");
+    screen.setCursor(middleX - (screen.getFontWidth() * (strlen("for") / 2)),
+                     middleY * 0.5 - (screen.getFontWidth() / 2));
+    screen.print("for");
+    screen.setCursor(middleX - (screen.getFontWidth() * (strlen("narrator") / 2)),
+                     middleY * 0.75 - (screen.getFontWidth() / 2));
+    screen.print("narrator");
+    screen.display();
+}
+
+void printRole(String role)
+{
+    screen.clear(PAGE);
+    screen.setFontType(0);
+    screen.setCursor(middleX - (screen.getFontWidth() * (role.length() / 2)),
+                     middleY * 0.5 - (screen.getFontWidth() / 2));
+    screen.print(role);
+    screen.display();
+}
