@@ -6,6 +6,9 @@
 extern String games[];
 extern int currentGame;
 extern void menu();
+void handleMenuState();
+void handlePong();
+void handleMafia();
 
 enum State
 {

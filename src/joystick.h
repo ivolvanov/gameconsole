@@ -13,6 +13,7 @@ enum joystickPos
 
 extern joystickPos currentPos;
 extern joystickPos previousPos;
+extern unsigned long long int timeSinceLastButtonPress;
 
 void getJoystickInput();
 

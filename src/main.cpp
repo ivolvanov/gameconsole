@@ -7,6 +7,8 @@
 #include "menu.h"
 #include "mafia.h"
 
+unsigned long long int timeSinceLastNarratorAnnouncement = 0;
+
 void setup()
 {
   Serial.begin(115200);
@@ -63,4 +65,10 @@ void loop()
 
   else if (state == MAFIA_PLAYING)
     mafiaGame();
+
+  if (mafiaRole == NARRATOR && millis() - timeSinceLastNarratorAnnouncement > 1000)
+  {
+    esp_now_send(broadcastAddress, (uint8_t *)&mafiaNarratorMessage, sizeof(mafiaNarratorMessage));
+    timeSinceLastNarratorAnnouncement = millis();
+  }
 }

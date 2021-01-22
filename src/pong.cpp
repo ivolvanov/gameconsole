@@ -6,6 +6,7 @@
 #include "menu.h"
 
 PongStatus pong = MASTER;
+bool connectionLost = false;
 
 void pongGame()
 {
@@ -15,11 +16,14 @@ void pongGame()
     if (pong == SLAVE)
         delay(20); //so that the master has enough time to perform the calculations and send the message
 
+    esp_now_send(broadcastAddress, (uint8_t *)&pongFoundMessage, sizeof(pongFoundMessage));
+
     while (playerScore < 3 && opponentScore < 3)
     {
         if (state != PONG_PLAYING)
         {
             printConnectionLost();
+            connectionLost = true;
             break;
         }
 
@@ -146,10 +150,13 @@ void pongGame()
         delay(10);
     }
 
-    if (playerScore == 3)
-        printWin();
-    else
-        printLoss();
+    if (!connectionLost)
+    {
+        if (playerScore == 3)
+            printWin();
+        else
+            printLoss();
+    }
 
     state = MENU;
     pong = MASTER;

@@ -12,8 +12,10 @@ enum MafiaRole
 };
 
 void mafiaGame();
+void resetMafia();
 
-extern int howManyMessages;
+extern unsigned long long int timeSinceLastRoleAssignment;
+extern unsigned long long int timeSinceLastNarratorAnnouncement;
 extern MafiaRole mafiaRole;
 
 #endif
