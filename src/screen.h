@@ -17,5 +17,8 @@ void printWaitingForOpponent();
 void printConnectionLost();
 void printWin();
 void printLoss();
+void printPressToStart();
+void printWaitingForNarrator();
+void printRole(String role);
 
 #endif

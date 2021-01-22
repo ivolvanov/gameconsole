@@ -5,6 +5,9 @@
 #include "pong.h"
 #include "communication.h"
 #include "menu.h"
+#include "mafia.h"
+
+unsigned long long int timeSinceLastNarratorAnnouncement = 0;
 
 void setup()
 {
@@ -57,6 +60,15 @@ void loop()
   getJoystickInput();
   menu();
 
-  if (state == PLAYING)
+  if (state == PONG_PLAYING)
     pongGame();
+
+  else if (state == MAFIA_PLAYING)
+    mafiaGame();
+
+  if (mafiaRole == NARRATOR && millis() - timeSinceLastNarratorAnnouncement > 1000)
+  {
+    esp_now_send(broadcastAddress, (uint8_t *)&mafiaNarratorMessage, sizeof(mafiaNarratorMessage));
+    timeSinceLastNarratorAnnouncement = millis();
+  }
 }

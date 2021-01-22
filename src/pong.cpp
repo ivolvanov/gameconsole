@@ -6,6 +6,7 @@
 #include "menu.h"
 
 PongStatus pong = MASTER;
+bool connectionLost = false;
 
 void pongGame()
 {
@@ -15,16 +16,19 @@ void pongGame()
     if (pong == SLAVE)
         delay(20); //so that the master has enough time to perform the calculations and send the message
 
+    esp_now_send(broadcastAddress, (uint8_t *)&pongFoundMessage, sizeof(pongFoundMessage));
+
     while (playerScore < 3 && opponentScore < 3)
     {
-        if (state != PLAYING)
+        if (state != PONG_PLAYING)
         {
             printConnectionLost();
+            connectionLost = true;
             break;
         }
 
-        int paddleW = 3;  // Paddle width
-        int paddleH = 15; // Paddle height
+        int paddleW = 3;     // Paddle width
+        int paddleH = 15;    // Paddle height
         int ball_radius = 1; // Ball radius
 
         // Opponent paddle (left) position coordinates
@@ -36,8 +40,8 @@ void pongGame()
         // Ball position coordinates
         int ball_X = opponent_X + paddleW + ball_radius;
         int ball_Y = random(1 + ball_radius, screen.getLCDHeight() - ball_radius); //opponent_Y + ball_rad;
-        int ballVelocityX = 2;                                               // Ball left/right velocity
-        int ballVelocityY = 2;                                               // Ball up/down velocity
+        int ballVelocityX = 2;                                                     // Ball left/right velocity
+        int ballVelocityY = 2;                                                     // Ball up/down velocity
         //int opponent_paddle_velocity = -2;                                 // Paddle 0 velocity
         int player_paddle_velocity = 2;   // Paddle 1 velocity
         uint32_t lastTimeBallHitWall = 0; // used to fix a bug related to ball radius and wall thickness that sometimes caused the ball to glitch in the wall
@@ -45,7 +49,7 @@ void pongGame()
 
         //While the ball is in the bounds of the playing field
         while ((ball_X > 0) &&
-               (ball_X + ball_radius < screen.getLCDWidth() && state == PLAYING))
+               (ball_X + ball_radius < screen.getLCDWidth() && state == PONG_PLAYING))
         {
 
             // Move ball
@@ -98,13 +102,13 @@ void pongGame()
             if (pong == MASTER)
             {
                 sprintf(messageToBeSent, "%d;%d;%d;%d;%d", player_Y, ball_X, ball_Y, playerScore, opponentScore);
-                /*esp_err_t result = */ esp_now_send(opponent, (uint8_t *)&messageToBeSent, sizeof(messageToBeSent));
+                /*esp_err_t result = */ esp_now_send(pongOpponent, (uint8_t *)&messageToBeSent, sizeof(messageToBeSent));
                 sscanf(messageReceived, "%d", &opponent_Y);
             }
             else
             {
                 sprintf(messageToBeSent, "%d", player_Y);
-                /*esp_err_t result = */ esp_now_send(opponent, (uint8_t *)&messageToBeSent, sizeof(messageToBeSent));
+                /*esp_err_t result = */ esp_now_send(pongOpponent, (uint8_t *)&messageToBeSent, sizeof(messageToBeSent));
                 sscanf(messageReceived, "%d;%d;%d;%d;%d", &opponent_Y, &ball_X, &ball_Y, &opponentScore, &playerScore);
                 ball_X = screen.getLCDWidth() - ball_X - 2;
             }
@@ -141,9 +145,17 @@ void pongGame()
                 opponentScore++;
             }
             sprintf(messageToBeSent, "%d;%d;%d;%d;%d", player_Y, ball_X, ball_Y, playerScore, opponentScore);
-            esp_now_send(opponent, (uint8_t *)&messageToBeSent, sizeof(messageToBeSent));
+            esp_now_send(pongOpponent, (uint8_t *)&messageToBeSent, sizeof(messageToBeSent));
         }
         delay(10);
+    }
+
+    if (!connectionLost)
+    {
+        if (playerScore == 3)
+            printWin();
+        else
+            printLoss();
     }
 
     state = MENU;

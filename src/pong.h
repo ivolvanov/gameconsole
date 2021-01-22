@@ -10,5 +10,6 @@ enum PongStatus
 void pongGame();
 
 extern PongStatus pong;
+extern bool connectionLost;
 
 #endif
